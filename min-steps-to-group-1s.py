@@ -33,21 +33,26 @@ Thus, the minimum number of swaps required is 0.
 
 """
 
+
 # Sub-optimal: Time limit exceeded
-
-
 class Solution:
+    """
+    Solve using a sliding window
+    """
+
     def minSwaps(self, nums: List[int]) -> int:
         self.nums = nums
+
+        # Window size = max number of ones - like an electron and holes, where remaining 1s are left to fill the holes
         window_size = total_count_of_ones = nums.count(1)
-        count = len(nums)
         min_swaps_required = count
 
-        print(f"Total ones = {total_count_of_ones}")
-
-        for i in range(0, count):
+        for i in range(0, len(nums)):
+            # Calculate the # of 1s in this window
             curr_count_of_ones = self.sum(i, window_size)
-            print(f"When checked from {i}, 1s = {curr_count_of_ones}")
+            ## TODO: Instead of computing sum for every iteration, reduce the element going out and add the element coming in
+
+            # The diff between total 1s and the 1s in the window = holes, which can be filled by swapping
             min_swaps_required = min(
                 min_swaps_required, total_count_of_ones - curr_count_of_ones
             )
@@ -55,8 +60,14 @@ class Solution:
         return min_swaps_required
 
     def sum(self, start: int, window_size: int):
+        """
+        Calculate the sum of a window in a circular list
+        """
+
         sum = 0
         for i in range(start, start + window_size):
-            sum += self.nums[i % len(self.nums)]
+            sum += self.nums[
+                i % len(self.nums)
+            ]  # (i % len) would give the element from the start if window overflowing
 
         return sum
